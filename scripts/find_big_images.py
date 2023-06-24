@@ -49,15 +49,14 @@ def convert_unit(size_in_bytes, unit):
 # --
 
 def make_img_dict(imgPath, Img):
-    f = {
-        "path": imgPath,
-        "width": Img.width,
-        "height": Img.height,
-        "PIL_Image": Img,
-        "file_name": os.path.basename(imgPath),
-        "size":   os.stat(imgPath).st_size
-    }
-    return f
+   return {
+       "path": imgPath,
+       "width": Img.width,
+       "height": Img.height,
+       "PIL_Image": Img,
+       "file_name": os.path.basename(imgPath),
+       "size": os.stat(imgPath).st_size,
+   }
 
 def get_img_data():
     for img in imgs:
@@ -73,23 +72,23 @@ def get_img_data():
 
 
 def print_report():
-    print("\nThe following images from ../jekyll/assets/img/ are soted by size.\n")
-    print ("{:<60} | {:<7} | {:<7} | {:<7}".format('File', 'width', 'height', "size"))
-    print ("-----------------------------------------------------------------------------------------------------------------")
+   print("\nThe following images from ../jekyll/assets/img/ are soted by size.\n")
+   print ("{:<60} | {:<7} | {:<7} | {:<7}".format('File', 'width', 'height', "size"))
+   print ("-----------------------------------------------------------------------------------------------------------------")
 
-    Images.sort(key = lambda i: (i['width']))
-    Images.reverse()
-    for idx, img in enumerate(Images):
-        path = img["path"].split("../jekyll/assets/img/")[1]
-        imgSize = convert_unit(img["size"], SIZE_UNIT.MB)
-        print ("{:<60} | {:<7} | {:<7} | {:<7}".format(path,  img["width"], img["height"], imgSize))
+   Images.sort(key = lambda i: (i['width']))
+   Images.reverse()
+   for img in Images:
+      path = img["path"].split("../jekyll/assets/img/")[1]
+      imgSize = convert_unit(img["size"], SIZE_UNIT.MB)
+      print ("{:<60} | {:<7} | {:<7} | {:<7}".format(path,  img["width"], img["height"], imgSize))
 
 
 def resize_images():
    """If image is larger than img_size, move it to a folder for manual resizing"""
    if not os.path.exists("./images_to_compress"):
       os.mkdir("./images_to_compress")
-   for idx, img in enumerate(Images):
+   for img in Images:
       if img["width"] > 1920 or img["height"] > 1920:
 
          img["PIL_Image"].thumbnail((1920, 1920))
