@@ -21,15 +21,13 @@ docs_paths = (
 def create_document_metadata(file_name, last_updated, last_updated_ts, file_path, file_dir):
     """Create a dict of metadata for each file; 
     a list of these dict are stored in updated_docs_metadata"""
-    f = {
+    return {
         "last_updated": last_updated,
         "last_updated_ts": last_updated_ts,
         "file_name": file_name,
         "file_path": file_path,
-        "file_dir": file_dir
-
+        "file_dir": file_dir,
     }
-    return f
 
 
 def iterate_docs():
@@ -42,12 +40,14 @@ def iterate_docs():
 
 
     for file in files:
-        relative_date = os.popen('git log -1 --date=relative --format="%ad" -- ' + file).read()
-        epoch_date    = os.popen('git log -1 --format="%ct" -- ' + file).read()
+        relative_date = os.popen(
+            f'git log -1 --date=relative --format="%ad" -- {file}'
+        ).read()
+        epoch_date = os.popen(f'git log -1 --format="%ct" -- {file}').read()
         fpath         = Path(file)
         file_name     = str(fpath.stem)
         file_dir      = str(fpath.parent.name)
-        name          = file_name + str(fpath.suffix)
+        name = file_name + fpath.suffix
         doc_data      = create_document_metadata(name, relative_date, epoch_date, file, file_dir)
 
         updated_docs_metadata.append(doc_data)
